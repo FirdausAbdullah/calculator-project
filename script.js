@@ -1,6 +1,7 @@
 
 //1. cannot delete properly
-//2. decimal value and division result
+//2. add cannot divide by 0
+//3. equal button - must insert a full expression
 
 
 
