@@ -5,7 +5,7 @@ const clearButton = document.querySelector('[data-clear]');
 const equalButton = document.querySelector('[data-equal]');
 const topDisplay = document.querySelector('[data-topDisplay]');
 const bottomDisplay = document.querySelector('[data-bottomDisplay]');
-let operation = undefined;
+let operation = '';
 let operandOne = '';
 let operandTwo = '';
 let result = 0;
@@ -54,7 +54,7 @@ function state_one(event){
     if(operandOne.includes('.') && event == '.')return;
     operandOne += event ;
     operandTwo= 0;
-    operation= undefined;
+    operation= '';
     topDisplay.innerText+=event;
     bottomDisplay.innerText='';
 }
@@ -68,10 +68,19 @@ function state_two(event){
         deleteState = 0;
         return;
     }
+    
     operation = event.toString();
+    
+    if(operandTwo != ''){
+        operandOne = result.toString();
+        operandTwo= '';
+        topDisplay.innerText = result.toString();
+        bottomDisplay.innerText=result.toString();
+    }
     topDisplay.innerText+=operation;
     result = operate();
     bottomDisplay.innerText=result.toString();
+    
 }
 
 function state_three(event){
@@ -91,23 +100,6 @@ function state_three(event){
     bottomDisplay.innerText=result.toString();
 }
 
-function state_four(event){
-    if(deleteState){
-        operation = undefined;
-        topDisplay.innerText = topDisplay.innerText.slice(0,-1);
-        bottomDisplay.innerText = ''
-        state = 3;
-        deleteState = 0;
-        return;
-    }
-    operandOne = result.toString();
-    operandTwo= '';
-    operation= event;
-    result = operate();
-    topDisplay.innerText+=event;
-    bottomDisplay.innerText=result;
-}
-
 
 function calculatorStatehandler(event){
     switch (state) {
@@ -122,9 +114,6 @@ function calculatorStatehandler(event){
             break;
         case 3:
             state_three(event);
-            break;
-        case 4:
-            state_four(event);
             break;
         default:
             break;
@@ -150,10 +139,6 @@ numberButtons.forEach(button=>{
             case 3:
                 calculatorStatehandler(button.innerText);
                 break;
-            case 4:
-                state = 3;
-                calculatorStatehandler(button.innerText);
-                break;
             default:
                 break;
         }
@@ -174,10 +159,8 @@ operatorButtons.forEach(button=>{
             case 2:
                 break;
             case 3:
-                state = 4;
+                state = 2;              
                 calculatorStatehandler(button.innerText);
-                break;
-            case 4:
                 break;
 
             default:
@@ -206,10 +189,7 @@ deleteButton.addEventListener('click',()=>{
         deleteState = 1;
         state_three();
         break;
-    case 4:
-        deleteState = 1;
-        state_four();
-        break;
+
     default:
         break;
   }
