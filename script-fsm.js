@@ -22,11 +22,22 @@ function operate(){
       result = Math.round((Number(operandOne) - Number(operandTwo))*1000000)/1000000;
       break;
     case 'x':
+        if(operandTwo == ''){
+            operandTwo = '1';
+            result = Math.round((Number(operandOne) * Number(operandTwo))*1000000)/1000000;
+            operandTwo = '';
+            break;
+        }
       result = Math.round((Number(operandOne) * Number(operandTwo))*1000000)/1000000;
       break;
     case '÷':
+        if(operandTwo == ''){
+            operandTwo = '1';
+            result = Math.round((Number(operandOne) / Number(operandTwo))*1000000)/1000000;
+            operandTwo = '';
+            break;
+        }
       result = Math.round((Number(operandOne) / Number(operandTwo))*1000000)/1000000;
-      
       break;  
     default:
         return  
@@ -173,6 +184,14 @@ operatorButtons.forEach(button=>{
 clearButton.addEventListener('click',()=>{
     state = 0;
     calculatorStatehandler();
+});
+
+equalButton.addEventListener('click',()=>{
+    if(operation != ''){
+    result = operate();
+    topDisplay.innerText = '';
+    bottomDisplay.innerText = result.toString();
+    }
 });
 
 deleteButton.addEventListener('click',()=>{
