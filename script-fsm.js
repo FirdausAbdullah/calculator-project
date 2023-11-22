@@ -10,6 +10,7 @@ let operandOne = '';
 let operandTwo = '';
 let result = 0;
 let state = 0;
+let deleteState = 0;
 
 function operate(){
     if (operation == undefined) return;
@@ -43,6 +44,13 @@ function initial_state(){
 }
 
 function state_one(event){
+    if(deleteState){
+        operandOne=operandOne.slice(0,-1);
+        topDisplay.innerText = topDisplay.innerText.slice(0,-1);
+        if(operandOne == '') state = 0;
+        deleteState = 0;
+        return;
+    }
     if(operandOne.includes('.') && event == '.')return;
     operandOne += event ;
     operandTwo= 0;
@@ -52,6 +60,14 @@ function state_one(event){
 }
 
 function state_two(event){
+    if(deleteState){
+        operation = undefined;
+        topDisplay.innerText = topDisplay.innerText.slice(0,-1);
+        bottomDisplay.innerText = ''
+        state = 1;
+        deleteState = 0;
+        return;
+    }
     operation = event.toString();
     topDisplay.innerText+=operation;
     result = operate();
@@ -59,6 +75,15 @@ function state_two(event){
 }
 
 function state_three(event){
+    if(deleteState){
+        operandTwo=operandTwo.slice(0,-1);
+        topDisplay.innerText = topDisplay.innerText.slice(0,-1);
+        result = operate();
+        bottomDisplay.innerText = result.toString();
+        if(operandTwo == '') state = 2;
+        deleteState = 0;
+        return;
+    }
     if(typeof operandTwo == 'number') operandTwo = '';
     operandTwo += event;
     topDisplay.innerText+=event;
@@ -67,6 +92,14 @@ function state_three(event){
 }
 
 function state_four(event){
+    if(deleteState){
+        operation = undefined;
+        topDisplay.innerText = topDisplay.innerText.slice(0,-1);
+        bottomDisplay.innerText = ''
+        state = 3;
+        deleteState = 0;
+        return;
+    }
     operandOne = result.toString();
     operandTwo= '';
     operation= event;
@@ -74,6 +107,7 @@ function state_four(event){
     topDisplay.innerText+=event;
     bottomDisplay.innerText=result;
 }
+
 
 function calculatorStatehandler(event){
     switch (state) {
@@ -123,6 +157,8 @@ numberButtons.forEach(button=>{
             default:
                 break;
         }
+
+        console.log(state);
     });
 });
 
@@ -147,6 +183,7 @@ operatorButtons.forEach(button=>{
             default:
                 break;
         }
+        console.log(state);
     });
 });
 
@@ -156,5 +193,25 @@ clearButton.addEventListener('click',()=>{
 });
 
 deleteButton.addEventListener('click',()=>{
-  deleteEntry();
+  switch (state) {
+    case 1:
+        deleteState = 1;
+        state_one();
+        break;
+    case 2:
+        deleteState = 1;
+        state_two();
+        break;
+    case 3:
+        deleteState = 1;
+        state_three();
+        break;
+    case 4:
+        deleteState = 1;
+        state_four();
+        break;
+    default:
+        break;
+  }
+  console.log(state);
 });
